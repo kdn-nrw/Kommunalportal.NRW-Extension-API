@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions name="DocumentService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Service"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:ds="urn:kommunalportal-nrw:extension-api:K1.0:Document:Service"
+                  xmlns:dm="urn:kommunalportal-nrw:extension-api:K1.0:Document:Messages"
+                  xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+                  xmlns:bm="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Messages" schemaLocation="DocumentMessages.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="DocumentTypes.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages" schemaLocation="../BaseMessages.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+	<!-- Header -->
+	<wsdl:message name="auth">
+		<wsdl:part name="auth" element="cm:auth" />
+	</wsdl:message>
+
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+	
+	<!-- Body -->
+	<wsdl:message name="serverFault">
+		<wsdl:part name="fault" element="bm:serverFault" />
+	</wsdl:message>
+	
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="bm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="bm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="storeDocumentRequest">
+		<wsdl:part element="dm:storeDocument" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="storeDocumentResponse">
+		<wsdl:part element="dm:storeDocumentResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getDocumentListRequest">
+		<wsdl:part element="dm:getDocumentList" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getDocumentListResponse">
+		<wsdl:part element="dm:getDocumentListResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getDocumentRequest">
+		<wsdl:part element="dm:getDocument" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getDocumentResponse">
+		<wsdl:part element="dm:getDocumentResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="DocumentService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="ds:getVersionRequest" />
+			<wsdl:output message="ds:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="storeDocument">
+			<wsdl:input message="ds:storeDocumentRequest" />
+			<wsdl:output message="ds:storeDocumentResponse" />
+			<wsdl:fault name="fault" message="ds:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getDocumentList">
+			<wsdl:input message="ds:getDocumentListRequest" />
+			<wsdl:output message="ds:getDocumentListResponse" />
+			<wsdl:fault name="fault" message="ds:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getDocument">
+			<wsdl:input message="ds:getDocumentRequest" />
+			<wsdl:output message="ds:getDocumentResponse" />
+			<wsdl:fault name="fault" message="ds:serverFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="DocumentServiceSOAP" type="ds:DocumentService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Document:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ds:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="storeDocument">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Document:action:storeDocument" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ds:auth" part="auth"/>
+				<soap:header message="ds:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getDocumentList">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Document:action:getDocumentList" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ds:auth" part="auth"/>
+				<soap:header message="ds:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getDocument">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Document:action:getDocument" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ds:auth" part="auth"/>
+				<soap:header message="ds:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

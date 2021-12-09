@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions  name="PaymentService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Service"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:ps="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Service"
+	xmlns:pm="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Messages"
+	xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+	xmlns:bm="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Messages" schemaLocation="PaymentMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages" schemaLocation="../BaseMessages.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+	
+	<!-- Header -->
+	<wsdl:message name="auth">
+		<wsdl:part name="auth" element="cm:auth" />
+	</wsdl:message>
+
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+	
+	<!-- Body -->
+	<wsdl:message name="serverFault">
+		<wsdl:part name="fault" element="bm:serverFault" />
+	</wsdl:message>
+
+	<wsdl:message name="paymentFault">
+		<wsdl:part name="fault" element="pm:paymentFault" />
+	</wsdl:message>
+	
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="bm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="bm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getPaymentProjectsRequest">
+		<wsdl:part element="pm:getPaymentProjects" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getPaymentProjectsResponse">
+		<wsdl:part element="pm:getPaymentProjectsResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="initPaymentRequest">
+		<wsdl:part element="pm:initPayment" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="initPaymentResponse">
+		<wsdl:part element="pm:initPaymentResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getPaymentDetailsRequest">
+		<wsdl:part element="pm:getPaymentDetails" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getPaymentDetailsResponse">
+		<wsdl:part element="pm:getPaymentDetailsResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="PaymentService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="ps:getVersionRequest" />
+			<wsdl:output message="ps:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getPaymentProjects">
+			<wsdl:input message="ps:getPaymentProjectsRequest" />
+			<wsdl:output message="ps:getPaymentProjectsResponse" />
+			<wsdl:fault name="fault" message="ps:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="initPayment">
+			<wsdl:input message="ps:initPaymentRequest" />
+			<wsdl:output message="ps:initPaymentResponse" />
+			<wsdl:fault name="paymentFault" message="ps:paymentFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getPaymentDetails">
+			<wsdl:input message="ps:getPaymentDetailsRequest" />
+			<wsdl:output message="ps:getPaymentDetailsResponse" />
+			<wsdl:fault name="fault" message="ps:serverFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="PaymentServiceSOAP" type="ps:PaymentService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Payment:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getPaymentProjects">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Payment:action:getPaymentProjects" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ps:auth" part="auth"/>
+				<soap:header message="ps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="initPayment">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Payment:action:initPayment" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ps:auth" part="auth"/>
+				<soap:header message="ps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="paymentFault">
+				<soap:fault name="paymentFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getPaymentDetails">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Payment:action:getPaymentDetails" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ps:auth" part="auth"/>
+				<soap:header message="ps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

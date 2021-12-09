@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+	xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+	xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+	xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types" schemaLocation="../User/UserTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<complexType name="Document">
+		<annotation>
+			<documentation>Ein Dokument inkl. Metadaten.</documentation>
+		</annotation>
+		<sequence>
+			<element name="metadata" type="dt:DocumentInfo" />
+			<element name="documentdata" type="base64Binary" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="DocumentMetadata">
+		<annotation>
+			<documentation>Metadaten zu einem Dokument.</documentation>
+		</annotation>
+		<sequence>
+			<element name="filename">
+				<simpleType>
+					<restriction base="string">
+						<maxLength value="256" />
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="type" type="bt:mediaType" />
+			<element name="size" type="positiveInteger">
+				<annotation>
+					<documentation>Die Größe des Dokuments in Byte.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attributeGroup ref="dt:DocumentControls" />
+	</complexType>
+	
+	<attributeGroup name="DocumentControls">
+		<attribute name="publishToDocSafe" type="boolean" default="false">
+			<annotation>
+				<documentation>Gibt an, ob das Dokument für andere Services verfügbar sein soll.</documentation>
+			</annotation>
+		</attribute>
+	</attributeGroup>
+	
+	<complexType name="DocumentInfo">
+		<annotation>
+			<documentation>Informationen zu einem Dokument.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="dt:DocumentMetadata">
+				<sequence>
+					<element name="documentId" type="dt:documentId" />
+					<element name="userId" type="ut:userId" minOccurs="0"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="DocumentAttachment">
+		<annotation>
+			<documentation>Informationen zu einem verknüpften Dokument.</documentation>
+		</annotation>
+		<sequence>
+			<element name="documentId" type="dt:documentId" />
+			<element name="description" type="dt:documentDescription" />
+		</sequence>
+	</complexType>
+	
+	<simpleType name="documentDescription">
+		<annotation>
+			<documentation>Beschreibung eines beigefügten Dokuments.</documentation>
+		</annotation>
+		<restriction base="string">
+			<maxLength value="255" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="documentId">
+		<annotation>
+			<documentation>Die ID eines Dokuments.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+</schema>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Messages"
+		xmlns:adt="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+		xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+		xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types" schemaLocation="ApplicationDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="../Document/DocumentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types" schemaLocation="../Extension/ExtensionTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="submitApplicationData">
+		<annotation>
+			<documentation>Übermittlung von Anwendungsdaten an das Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ApplicationData" type="adt:ApplicationData"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="submitApplicationDataResponse">
+		<annotation>
+			<documentation>Rückgabe der ID des erzeugten Eintrags.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="id" type="adt:applicationDataId"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getApplicationData">
+		<annotation>
+			<documentation>Laden einer oder mehrerer Anwendungsdaten aus dem Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ids" type="adt:applicationDataId" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getApplicationDataResponse">
+		<annotation>
+			<documentation>Rückgabe der Anwendungsdaten.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ApplicationData" type="adt:ApplicationDataEntry" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getAllApplicationData">
+		<annotation>
+			<documentation>
+				Laden aller Anwendungsdaten aus dem Portal, die die Extension lesen darf. Es ist auch möglich, nur einen Auszug der Daten, gefiltert
+				nach den definierten Parametern, zu erhalten.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="start" type="dateTime" minOccurs="0">
+					<annotation>
+						<documentation>
+							Nur Daten, die nach dem angegebenen Startdatum verändert wurden, werden geladen.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="extensionServiceId" type="et:extensionServiceId" minOccurs="0">
+					<annotation>
+						<documentation>
+							Nur Daten, die zu dem angegebenem ExtensionService gehören, werden geladen.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="status" type="adt:ApplicationDataStatus" minOccurs="0">
+					<annotation>
+						<documentation>
+							Nur Daten, die den angegebenen Status haben, werden geladen.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="externalStatus" type="adt:ExternalStatusFilter" minOccurs="0">
+					<annotation>
+						<documentation>
+							Filtert nach einem externen Status. Wenn der ExtensionService NULL ist, so wird einfach nur nach Vorhandensein
+							der messageShort in einem der externen Status gefiltert. Wenn dagegen ein ExtensionService angegeben ist, wird nach
+							Vorhandensein der messageShort in dem zum ExtensionService gehörigen Externen Status gefiltert.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="detailsDataShort" type="adt:DetailsShort" minOccurs="0" maxOccurs="unbounded">
+					<annotation>
+						<documentation>
+							Filtert nach Detail-Daten. Wenn die DetailsShort der Anwendungsdaten in Key und Value mit dem hier definierten Wert
+							übereinstimmen, wird dieser Eintrag im Ergebnis auftauchen. Es können auch mehrere Detaildaten angegeben werden. Dann
+							muss jede dieser Detaildaten übereinstimmen, damit der Eintrag im Ergebnis auftaucht.
+						</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getAllApplicationDataResponse">
+		<annotation>
+			<documentation>Rückgabe der Anwendungsdaten.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ApplicationData" type="adt:ApplicationDataEntry" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="updateStatus">
+		<annotation>
+			<documentation>Aktualisiert den Status und/oder Externen Status der hinterlegten Anwendungsdaten.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="id" type="adt:applicationDataId"/>
+				<element name="status" type="adt:ApplicationDataStatus" minOccurs="0"/>
+				<element name="externalStatus" type="bt:StatusInfo" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="updateStatusResponse">
+		<annotation>
+			<documentation>Antwort zur Status-Aktualisierung</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="attachDocument">
+		<annotation>
+			<documentation>Nachträgliches Anhängen eines bereits hochgeladenen Dokuments an bestehende Anwendungsdaten.</documentation>
+		</annotation>
+		<complexType>
+			<complexContent>
+				<extension base="dt:DocumentAttachment">
+					<sequence>
+						<element name="id" type="adt:applicationDataId">
+							<annotation>
+								<documentation>Die ID des existierenden Anwendungsdaten-Eintrags.</documentation>
+							</annotation>
+						</element>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="attachDocumentResponse">
+		<annotation>
+			<documentation>Status-Antwort zum Anhängen eines Dokuments.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>

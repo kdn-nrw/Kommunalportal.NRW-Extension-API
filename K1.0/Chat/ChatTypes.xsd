@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Chat:Types"
+		xmlns:ctt="urn:kommunalportal-nrw:extension-api:K1.0:Chat:Types"
+		xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+		xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types" schemaLocation="../User/UserTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="../Document/DocumentTypes.xsd" />
+
+	<complexType name="Chat">
+		<annotation>
+			<documentation>Ein (evtl. auszugsweiser) Chat-Verlauf.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ctt:ChatInfo">
+				<sequence>
+					<element name="entry" type="ctt:ChatEntry" minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="isExcerpt" type="boolean" default="false" />
+				<attribute name="excerptStart" type="dateTime" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="ChatInfo">
+		<annotation>
+			<documentation>Status-Informationen zu einem Chat.</documentation>
+		</annotation>
+		<sequence>
+			<element name="created" type="dateTime" />
+			<element name="status" type="ctt:chatStatus"/>
+			<element name="statusdate" type="dateTime" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ChatEntry">
+		<annotation>
+			<documentation>
+				Ein einzelner Eintrag aus dem Chat-Verlauf. Einträge können auch Statusnachrichten sein.
+				Dann stammen sie von keinem Benutzer und informieren z.B. darüber, dass der Chat geschlossen wurde.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="id" type="ctt:chatEntryId" />
+			<element name="created" type="dateTime" />
+			<element name="status" type="ctt:messageStatus"/>
+			<element name="statusdate" type="dateTime" />
+			<element name="user" type="ut:userId" minOccurs="0">
+				<annotation>
+					<documentation>
+						Der Benutzer, welcher den Chateintrag verfasst hat. Wird er weggelassen, handelt es sich um eine Nachricht vom System.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="message" type="string" />
+			<element name="isStatusMessage" type="boolean" default="false"/>
+			<element name="document" type="dt:DocumentInfo" minOccurs="0"/>
+			<element name="displayName" type="string" minOccurs="0">
+				<annotation>
+					<documentation>
+						Der Name, welcher als Absender dieser Nachricht angezeigt wird. Wird er weggelassen, wird der Name des verknüpften Benutzers
+						angezeigt. Wenn kein Benutzer angegeben wurde, darf auch kein displayName angegeben werden, da es sich in diesem Fall um eine
+						Systemnachricht handelt.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="chatStatus">
+		<annotation>
+			<documentation>
+				Mögliche Statuswerte eines Chats.
+			</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="open" />
+			<enumeration value="closed" />
+			<enumeration value="deleted" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="messageStatus">
+		<annotation>
+			<documentation>
+				Mögliche Statuswerte einer Chat-Nachricht.
+			</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="unread" />
+			<enumeration value="read" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="chatEntryId">
+		<annotation>
+			<documentation>Die ID eines ChatEntry-Objekts.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+</schema>

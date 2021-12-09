@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Messages"
+        xmlns:adt="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+        xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+        xmlns:ct="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+        elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Types" schemaLocation="MessageBoxTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types" schemaLocation="../ApplicationData/ApplicationDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+
+	<element name="sendNotification">
+	<annotation>
+		<documentation>Einstellen einer Benachrichtigung für den Besitzer des Anwendungsdaten-Eintrags.</documentation>
+	</annotation>
+	<complexType>
+		<sequence>
+			<element name="applicationDataId" type="adt:applicationDataId" />
+			<element name="subject" type="string" />
+			<element name="message" type="string" />
+			<element name="sendMail" type="boolean" default="true" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	</element>
+	<element name="sendNotificationResponse">
+		<annotation>
+			<documentation>Status-Antwort zur übermittelten Benachrichtigung.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="sendGroupNotification">
+		<annotation>
+			<documentation>Einstellen von Benachrichtigungen an die Inhaber der übergebenen Rechte.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="subject" type="string" />
+				<element name="message" type="string" />
+				<element name="sendMail" type="boolean" default="true" minOccurs="0"/>
+				<element name="permission" type="ct:permissionKey" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="sendGroupNotificationResponse">
+		<annotation>
+			<documentation>Status-Antwort zu den übermittelten Benachrichtigungen.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+</schema>

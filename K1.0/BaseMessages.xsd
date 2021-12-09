@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="qualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="BaseTypes.xsd" />
+	
+	<element name="getVersion">
+		<annotation>
+			<documentation></documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getVersionResponse">
+		<annotation>
+			<documentation></documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="version" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="serverFault">
+		<annotation>
+			<documentation>Allgemeiner Fehler auf der Server-Seite.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="status" type="bt:StatusInfo" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>

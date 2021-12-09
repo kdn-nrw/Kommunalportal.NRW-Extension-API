@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions  name="ExtensionService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Service"
+				   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+				   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+				   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+				   xmlns:es="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Service"
+				   xmlns:em="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Messages"
+				   xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+				   xmlns:bm="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Messages" schemaLocation="ExtensionMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages" schemaLocation="../BaseMessages.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+
+	<!-- Header -->
+	<wsdl:message name="auth">
+		<wsdl:part name="auth" element="cm:auth" />
+	</wsdl:message>
+
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+
+	<!-- Body -->
+	<wsdl:message name="serverFault">
+		<wsdl:part name="fault" element="bm:serverFault" />
+	</wsdl:message>
+
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="bm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="bm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllExtensionServicesRequest">
+		<wsdl:part element="em:getAllExtensionServices" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllExtensionServicesResponse">
+		<wsdl:part element="em:getAllExtensionServicesResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getExtensionServicesRequest">
+		<wsdl:part element="em:getExtensionServices" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getExtensionServicesResponse">
+		<wsdl:part element="em:getExtensionServicesResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllAuthorizedExtensionServicesRequest">
+		<wsdl:part element="em:getAllAuthorizedExtensionServices" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllAuthorizedExtensionServicesResponse">
+		<wsdl:part element="em:getAllAuthorizedExtensionServicesResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="saveExtensionServiceRequest">
+		<wsdl:part element="em:saveExtensionService" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="saveExtensionServiceResponse">
+		<wsdl:part element="em:saveExtensionServiceResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="deleteExtensionServiceRequest">
+		<wsdl:part element="em:deleteExtensionService" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="deleteExtensionServiceResponse">
+		<wsdl:part element="em:deleteExtensionServiceResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="ExtensionService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="es:getVersionRequest" />
+			<wsdl:output message="es:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getAllExtensionServices">
+			<wsdl:input message="es:getAllExtensionServicesRequest" />
+			<wsdl:output message="es:getAllExtensionServicesResponse" />
+			<wsdl:fault name="fault" message="es:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getExtensionServices">
+			<wsdl:input message="es:getExtensionServicesRequest" />
+			<wsdl:output message="es:getExtensionServicesResponse" />
+			<wsdl:fault name="fault" message="es:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getAllAuthorizedExtensionServices">
+			<wsdl:input message="es:getAllAuthorizedExtensionServicesRequest" />
+			<wsdl:output message="es:getAllAuthorizedExtensionServicesResponse" />
+			<wsdl:fault name="fault" message="es:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="saveExtensionService">
+			<wsdl:input message="es:saveExtensionServiceRequest" />
+			<wsdl:output message="es:saveExtensionServiceResponse" />
+			<wsdl:fault name="fault" message="es:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="deleteExtensionService">
+			<wsdl:input message="es:deleteExtensionServiceRequest" />
+			<wsdl:output message="es:deleteExtensionServiceResponse" />
+			<wsdl:fault name="fault" message="es:serverFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ExtensionServiceSOAP" type="es:ExtensionService">
+		<soap:binding style="document"
+					  transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getAllExtensionServices">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:getAllExtensionServices" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:auth" part="auth"/>
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getExtensionServices">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:getExtensionServices" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:auth" part="auth"/>
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getAllAuthorizedExtensionServices">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:getAllAuthorizedExtensionServices" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:auth" part="auth"/>
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="saveExtensionService">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:saveExtensionService" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:auth" part="auth"/>
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="deleteExtensionService">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:Extension:action:deleteExtensionService" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="es:auth" part="auth"/>
+				<soap:header message="es:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

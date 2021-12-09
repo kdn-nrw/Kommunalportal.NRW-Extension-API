@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:YellowPages:Types"
+	xmlns:ypt="urn:kommunalportal-nrw:extension-api:YellowPages:Types"
+	elementFormDefault="unqualified">
+
+	<complexType name="Service">
+		<annotation>
+			<documentation>Informationen zu einem verfügbaren Service-Endpunkt.</documentation>
+		</annotation>
+		<sequence>
+			<element name="name" type="NCName" />
+			<element name="url" type="anyURI"/>
+			<element name="description" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="HomePortal">
+		<annotation>
+			<documentation>Informationen zum aktuell verbundenen Portal.</documentation>
+		</annotation>
+		<sequence>
+			<element name="name" type="string"/>
+			<element name="homeUrl" type="anyURI"/>
+			<element name="portalId" type="ypt:portalId"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExtensionInfo">
+		<annotation>
+			<documentation>Informationen zur eigenen Extension aus dem verbundenen Portal.</documentation>
+		</annotation>
+		<sequence>
+			<element name="name" type="string" />
+			<element name="baseUrl" type="anyURI" />
+			<element name="authUrl" type="anyURI" />
+		</sequence>
+	</complexType>
+
+	<simpleType name="portalId">
+		<annotation>
+			<documentation>Die ID eines Portals.</documentation>
+		</annotation>
+		<restriction base="ypt:uuid">
+		</restriction>
+	</simpleType>
+
+	<simpleType name="uuid">
+		<annotation>
+			<documentation>Allgemeine Definition einer UUID.</documentation>
+		</annotation>
+		<restriction base="string">
+			<length value="36" fixed="true" />
+			<pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+		</restriction>
+	</simpleType>
+</schema>

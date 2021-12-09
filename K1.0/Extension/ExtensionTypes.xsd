@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+        xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+        xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+        xmlns:ct="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+        xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+        elementFormDefault="unqualified">
+    <import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd"/>
+    <import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd"/>
+    <import namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types" schemaLocation="../User/UserTypes.xsd"/>
+
+    <complexType name="ExtensionService">
+        <annotation>
+            <documentation>Ein Service einer Extension.</documentation>
+        </annotation>
+        <sequence>
+            <element name="id" type="et:extensionServiceId" minOccurs="0"/>
+            <element name="serviceInfo" type="et:ExtensionServiceInfo"/>
+            <element name="portalInfo" type="et:PortalInfo"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="PortalInfo">
+        <annotation>
+            <documentation>Meist nur für citkoPortal relevante Informationen eines ExtensionServices.</documentation>
+        </annotation>
+        <sequence>
+			<element name="detailsDataFilter" type="et:DataFilter" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="detailsLink" type="et:DetailsLink" minOccurs="0"/>
+            <element name="properties" type="et:ExtensionServiceProperties"/>
+            <element name="enabled" type="boolean"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="ExtensionServiceProperties">
+        <annotation>
+            <documentation>
+				Eigenschaften eines ExtensionServices.
+			</documentation>
+        </annotation>
+        <sequence>
+            <element name="minAuthLevel" type="ut:authLevel">
+                <annotation>
+                    <documentation>
+                        Mindestens notwendiges Authentifizierungsniveau um den INDEX-Task im Portal starten zu können.
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="paymentSupported" type="boolean">
+                <annotation>
+                    <documentation>
+                        Gibt an, ob der Service eine Online-Bezahlung unterstützt.
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="usagePermissions" type="ct:permissionKey" minOccurs="0" maxOccurs="unbounded">
+                <annotation>
+                    <documentation>
+                        Berechtigungen, von denen ein User mindestens eine haben muss, damit er den ExtensionService im Portal benutzen und sehen kann.
+                        Wenn keine Berechtigungen angegeben sind, kann jeder im Portal angemeldete Benutzer diesen ExtensionService sehen.
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="visibleForUnauthorized" type="boolean">
+                <annotation>
+                    <documentation>
+						Der ExtensionServices ist in der Serviceübersicht im Portal auch für einen nicht angemeldeten Benutzer sichtbar.
+                    </documentation>
+                </annotation>
+            </element>
+            <element name="showShortDetails" type="boolean">
+                <annotation>
+                    <documentation>
+                        Gibt an, ob bei Klick auf die Detailsansicht im Portal zunächst die portaleigene Standard-Detailseite mit den
+                        ApplicationDataDetails angezeigt werden soll. Selbst wenn dieser Wert auf false gesetzt ist, wird als Fallback trotzdem die
+                        portaleigene Standard-Detalseite angezegt, wenn die Extension nicht erreichbar sein sollte.
+                    </documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="ExtensionServiceInfo">
+        <annotation>
+            <documentation>Basis-Informationen zu einem ExtensionService.</documentation>
+        </annotation>
+        <sequence>
+            <element name="title" type="string"/>
+            <element name="titleShort" type="string" minOccurs="0"/>
+            <element name="description" type="string"/>
+            <element name="leikaId" type="bt:leikaId" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="ozgId" type="bt:ozgId" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="portalUrl" type="anyURI" minOccurs="0">
+                <annotation>
+                    <documentation>
+                        URL, mit der der ExtensionService über das Portal aufgerufen werden kann. Wird automatisch vom Portal erzeugt.
+                    </documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="Extension">
+        <annotation>
+            <documentation>Eine Extension</documentation>
+        </annotation>
+        <sequence>
+            <element name="title" type="string"/>
+            <element name="description" type="string"/>
+            <element name="customizable" type="boolean">
+                <annotation>
+                    <documentation>
+                        Die Extension kann im Portal über den ServiceApp-Manager konfiguriert werden und bietet dazu ihre eigene Route für den
+                        Task CUSTOMIZE.
+                    </documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <complexType name="DataFilter">
+        <annotation>
+            <documentation>Filter, welche zur Sortierung und Filterung entsprechender Anwendungsdaten verwendet werden können.</documentation>
+        </annotation>
+        <sequence>
+            <element name="key" type="et:filterKey"/>
+            <element name="name" type="string"/>
+            <element name="type" type="et:detailsDataType"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="DetailsLink">
+        <annotation>
+            <documentation>
+                Verlinkung, welche auf der Standard-Detailseite des Portals verwendet wird, um zur ausführlichen Detailseite der Extension zu
+                verweisen. Die Adresse des Links wird automatisch im Portal generiert. Wenn kein Link zu einer ApplicationData übergeben wird, gibt
+                es auf der Standard-Detailseite im Portal keinen Link zur Detailseite der Extension.
+            </documentation>
+        </annotation>
+        <sequence>
+            <element name="text">
+                <simpleType>
+                    <annotation>
+                        <documentation>Der Text des Links.</documentation>
+                    </annotation>
+                    <restriction base="string">
+                        <maxLength value="50" />
+                    </restriction>
+                </simpleType>
+            </element>
+            <element name="title" type="string">
+                <annotation>
+                    <documentation>Das Title-Attribut des Links.</documentation>
+                </annotation>
+            </element>
+        </sequence>
+    </complexType>
+
+    <simpleType name="filterKey">
+        <annotation>
+            <documentation>Je ExtensionService eindeutiger Schlüssel für die interne Identifizierung eines Filters.</documentation>
+        </annotation>
+        <restriction base="string">
+            <pattern value="[A-Za-z][-_#+/A-Za-z0-9]{0,255}"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="detailsDataType">
+        <annotation>
+            <documentation>Mögliche Datentypen für Detaildaten.</documentation>
+        </annotation>
+        <restriction base="token">
+            <enumeration value="NUMERIC">
+                <annotation>
+                    <documentation>
+                        Rationale Zahlen.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="STRING">
+                <annotation>
+                    <documentation>
+                        Zeichenketten.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="DATETIME">
+                <annotation>
+                    <documentation>
+                        Ein Datum und eine Uhrzeit im ISO 8601-Format.
+                    </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="DATE">
+                <annotation>
+                    <documentation>
+                        Ein Datum im ISO 8601-Format.
+                    </documentation>
+                </annotation>
+            </enumeration>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="extensionId">
+        <annotation>
+            <documentation>Die ID einer Extension.</documentation>
+        </annotation>
+        <restriction base="bt:uuid"/>
+    </simpleType>
+
+    <simpleType name="extensionServiceId">
+        <annotation>
+            <documentation>Die ID eines ExtensionServices.</documentation>
+        </annotation>
+        <restriction base="bt:uuid"/>
+    </simpleType>
+
+</schema>

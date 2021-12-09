@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions  name="PaymentService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Service"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:ps="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Service">
+	<wsdl:import location="PaymentService.wsdl" namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Service" />
+	<wsdl:service name="Payment">
+		<wsdl:port binding="ps:PaymentServiceSOAP" name="PaymentServiceSOAP">
+			<soap:address location="https://portal-api.citkomm.de/Remote/K1.0/PaymentService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

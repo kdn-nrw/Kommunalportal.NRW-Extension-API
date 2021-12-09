@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Messages"
+        xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+        elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types" schemaLocation="UserTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	
+	<element name="getUser">
+		<annotation>
+			<documentation>Abfrage der Informationen des angemeldeten Benutzers.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getUserResponse">
+		<annotation>
+			<documentation>
+				Liefert Informationen zum angemeldeten Benutzer zurück. Wenn es sich um einen Gast handelt, wird kein Benutzer zurückgegeben.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="user" type="ut:User" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="getUserInfo">
+		<annotation>
+			<documentation>Abfrage der Informationen beliebiger am Prozess beteiligter Benutzer.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="userId" type="ut:userId" maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getUserInfoResponse">
+		<annotation>
+			<documentation>Liefert Informationen zu den angefragten Benutzern zurück.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="user" type="ut:UserInfo" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+</schema>

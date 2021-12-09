@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Messages"
+        xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+        elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="DocumentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="storeDocument">
+		<annotation>
+			<documentation>
+				Ablegen eines neuen Dokuments im Portal. Die zurückgelieferte ID muss anschließend mit
+				einem Antrag verknüpft werden. Unverknüpfte Dokumente werden beim Ablauf der Remote-Sitzung gelöscht.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="metadata" type="dt:DocumentMetadata" />
+				<element name="documentdata" type="base64Binary" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="storeDocumentResponse">
+		<annotation>
+			<documentation>Rückgabe der ID des angelegten Dokuments.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="documentId" type="dt:documentId" />
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="getDocumentList">
+	<annotation>
+		<documentation>Abfrage einer Liste aller verfügbaren Dokumente des angemeldeten Benutzers.</documentation>
+	</annotation>
+	<complexType>
+		<sequence />
+	</complexType>
+</element>
+	<element name="getDocumentListResponse">
+		<annotation>
+			<documentation>Liste mit Informationen zu verfügbaren Dokumenten des angemeldeten Benutzers.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="document" type="dt:DocumentInfo" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getDocument">
+		<annotation>
+			<documentation>Abfrage eines verfügbaren Dokuments.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="documentId" type="dt:documentId" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getDocumentResponse">
+		<annotation>
+			<documentation>Daten eines abgerufenen Dokuments.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="document" type="dt:Document" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>

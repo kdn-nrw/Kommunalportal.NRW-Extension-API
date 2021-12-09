@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Messages"
+	xmlns:tdt="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types"
+	xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types" schemaLocation="TempDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="saveTempData">
+		<annotation>
+			<documentation>Speichert einen neuen TempData-Eintrag im Portal bzw. überschreibt einen vorhandenen TempData-Eintrag.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempData" type="tdt:TempData"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="saveTempDataResponse">
+		<annotation>
+			<documentation>Die ID des erzeugten/überschriebenen TempData-Eintrags.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempDataId" type="tdt:tempDataId"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getTempData">
+		<annotation>
+			<documentation>Abfrage von TempData-Einträgen.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempDataId" type="tdt:tempDataId" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getTempDataResponse">
+		<annotation>
+			<documentation>Die angefragten TempData-Einträge.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempData" type="tdt:TempData" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="passTempData">
+		<annotation>
+			<documentation>
+				Übermittlung von temporären Daten an das Portal mit dem Ziel, diese an einen anderen ExtensionService weiterzuleiten. Die temporären
+				Daten werden nach der Speicherung sofort an den im Portal konfigurierten Ziel-ExtensionService weitergegeben. Zu diesem Zweck wird
+				der Ziel-ExtensionService im Erfolgsfall direkt mit dem DATA-Task aufgerufen. Dazu muss zum Rückgabewert passUrl weitergeleitet werden.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempData" type="tdt:TempData"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="passTempDataResponse">
+		<annotation>
+			<documentation>Rückgabe des Links, der zu dem Ziel-ExtensionService unter Verwendung des DATA-Tasks führt.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="passUrl" type="anyURI"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="deleteTempData">
+		<annotation>
+			<documentation>Löscht die angegebenen TempData-Einträge.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="tempDataId" type="tdt:tempDataId" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="deleteTempDataResponse">
+		<annotation>
+			<documentation>Status-Antwort über den Erfolg bzw. Misserfolg des Löschens.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo" />
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>

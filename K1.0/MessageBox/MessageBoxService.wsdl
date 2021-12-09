@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions  name="MessageBoxService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Service"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:mbs="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Service"
+	xmlns:mbm="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Messages"
+	xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+	xmlns:bm="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:Messages" schemaLocation="MessageBoxMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd" />
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages" schemaLocation="../BaseMessages.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+	
+	<!-- Header -->
+	<wsdl:message name="auth">
+		<wsdl:part name="auth" element="cm:auth" />
+	</wsdl:message>
+
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+	
+	<!-- Body -->
+	<wsdl:message name="serverFault">
+		<wsdl:part name="fault" element="bm:serverFault" />
+	</wsdl:message>
+	
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="bm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="bm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="sendNotificationRequest">
+		<wsdl:part element="mbm:sendNotification" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="sendNotificationResponse">
+		<wsdl:part element="mbm:sendNotificationResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="sendGroupNotificationRequest">
+		<wsdl:part element="mbm:sendGroupNotification" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="sendGroupNotificationResponse">
+		<wsdl:part element="mbm:sendGroupNotificationResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="MessageBoxService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="mbs:getVersionRequest" />
+			<wsdl:output message="mbs:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="sendNotification">
+			<wsdl:input message="mbs:sendNotificationRequest" />
+			<wsdl:output message="mbs:sendNotificationResponse" />
+			<wsdl:fault name="fault" message="mbs:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="sendGroupNotification">
+			<wsdl:input message="mbs:sendGroupNotificationRequest" />
+			<wsdl:output message="mbs:sendGroupNotificationResponse" />
+			<wsdl:fault name="fault" message="mbs:serverFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="MessageBoxServiceSOAP" type="mbs:MessageBoxService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="mbs:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="sendNotification">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:action:sendNotification" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="mbs:auth" part="auth"/>
+				<soap:header message="mbs:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="sendGroupNotification">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:MessageBox:action:sendGroupNotification" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="mbs:auth" part="auth"/>
+				<soap:header message="mbs:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

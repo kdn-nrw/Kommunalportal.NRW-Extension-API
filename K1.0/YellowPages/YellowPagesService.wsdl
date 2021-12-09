@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions name="YellowPagesService" targetNamespace="urn:kommunalportal-nrw:extension-api:YellowPages:Service"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:yps="urn:kommunalportal-nrw:extension-api:YellowPages:Service"
+                  xmlns:ypm="urn:kommunalportal-nrw:extension-api:YellowPages:Messages"
+                  xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+>
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:YellowPages:Messages" schemaLocation="YellowPagesMessages.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:YellowPages:Types" schemaLocation="YellowPagesTypes.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+
+	<!-- Header -->
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="ypm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="ypm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getServiceListRequest">
+		<wsdl:part element="ypm:getServiceList" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getServiceListResponse">
+		<wsdl:part element="ypm:getServiceListResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getHomePortalRequest">
+		<wsdl:part element="ypm:getHomePortal" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getHomePortalResponse">
+		<wsdl:part element="ypm:getHomePortalResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getSupportedApiVersionsRequest">
+		<wsdl:part element="ypm:getSupportedApiVersions" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getSupportedApiVersionsResponse">
+		<wsdl:part element="ypm:getSupportedApiVersionsResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getExtensionInfoRequest">
+		<wsdl:part element="ypm:getExtensionInfo" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getExtensionInfoResponse">
+		<wsdl:part element="ypm:getExtensionInfoResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="YellowPagesService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="yps:getVersionRequest" />
+			<wsdl:output message="yps:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getServiceList">
+			<wsdl:input message="yps:getServiceListRequest" />
+			<wsdl:output message="yps:getServiceListResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getHomePortal">
+			<wsdl:input message="yps:getHomePortalRequest" />
+			<wsdl:output message="yps:getHomePortalResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getSupportedApiVersions">
+			<wsdl:input message="yps:getSupportedApiVersionsRequest" />
+			<wsdl:output message="yps:getSupportedApiVersionsResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="getExtensionInfo">
+			<wsdl:input message="yps:getExtensionInfoRequest" />
+			<wsdl:output message="yps:getExtensionInfoResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="YellowPagesServiceSOAP" type="yps:YellowPagesService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:YellowPages:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="yps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getServiceList">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:YellowPages:action:getServiceList" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="yps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getHomePortal">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:YellowPages:action:getHomeLocation" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="yps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getSupportedApiVersions">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:YellowPages:action:getSupportedApiVersions" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="yps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getExtensionInfo">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:YellowPages:action:getExtensionInfo" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="yps:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

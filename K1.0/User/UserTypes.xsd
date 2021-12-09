@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+	xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+	xmlns:ct="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+	xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	
+	<complexType name="User">
+		<annotation>
+			<documentation>Der angemeldete Benutzer.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ut:UserInfo">
+				<sequence>
+					<element name="authLevel" type="ut:authLevel" />
+					<element name="extensions" type="ut:UserExtensions" minOccurs="0">
+						<unique name="UniquePropertyExtensions">
+							<selector xpath="propertyExtension" />
+							<field xpath="@name" />
+						</unique>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="UserInfo">
+		<annotation>
+			<documentation>Informationen eines Benutzers.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="bt:Person">
+				<sequence>
+					<element name="address" type="bt:Address" />
+					<element name="contactData" type="bt:ContactData" minOccurs="0"/>
+					<element name="created" type="dateTime" />
+				</sequence>
+				<attribute name="userId" type="ut:userId" use="required"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="UserExtensions">
+		<annotation>
+			<documentation>Erweiterte Informationen zum angemeldeten Benutzers.</documentation>
+		</annotation>
+		<sequence>
+			<element name="servicekontoNRW" type="ut:ServicekontoNRWExt" minOccurs="0"/>
+			<element name="permissions" type="ut:PermissionExt" minOccurs="0"/>
+			<element name="propertyExtension" type="ut:PropertyExt" minOccurs="0" maxOccurs="unbounded">
+				<unique name="UniquePropertyNames">
+					<selector xpath="property" />
+					<field xpath="@name" />
+				</unique>
+			</element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ServicekontoNRWExt">
+		<annotation>
+			<documentation>Erweiterung zur Übertragung der Zusatzinformationen aus dem ServicekontoNRW.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ut:UserExtensionBase">
+				<sequence>
+					<element name="eidData" type="string" minOccurs="0"/>
+					<element name="rawData" type="string" minOccurs="0"/>
+					<element name="demail" type="bt:Email" minOccurs="0"/>
+					<element name="maxAuthLevel" type="ut:authLevel" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="PermissionExt">
+		<annotation>
+			<documentation>Erweiterung zur Übertragung der Benutzerrechte.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ut:UserExtensionBase">
+				<sequence>
+					<element name="permission" type="ct:permissionKey" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="PropertyExt">
+		<annotation>
+			<documentation>Allgemeine Erweiterung für nicht spezifizierte Inhalte.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ut:UserExtensionBase">
+				<sequence>
+					<element name="info" type="string" minOccurs="0"/>
+					<element name="property" type="bt:NameValuePair" maxOccurs="unbounded"/>
+				</sequence>
+				<attribute name="name" type="NCName" />
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="UserExtensionBase" abstract="true">
+		<annotation>
+			<documentation>Abstrakter Basis-Typ für Zusatzinformationen zum angemeldeten Benutzer.</documentation>
+		</annotation>
+	</complexType>
+
+	<simpleType name="authLevel">
+		<annotation>
+			<documentation>Mögliche Vertrauensniveaus. Diese entsprechen dem STORK-QAA-Level. Siehe http://www.ehgi.eu/Lists/Posts/Attachments/12/Day1_3_STORK%20on%20eID_Robert%20Scharinger.pdf</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="NONE">
+				<annotation>
+					<documentation>
+						Der Benutzer ist nicht eingeloggt.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="LOW">
+				<annotation>
+					<documentation>
+						Der Benutzer hat sich mit einem niedrigen Vertrauensniveau z.B mittels Benutzername und Kennwort eingeloggt.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="SUBSTANTIAL">
+				<annotation>
+					<documentation>
+						Der Benutzer hat sich mit einem substantiellen Vertrauensniveau (z.B. VideoIdent) eingeloggt.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="HIGH">
+				<annotation>
+					<documentation>
+						Der Benutzer hat sich mit einem hohen Vertrauensniveau (z.B. eID) eingeloggt.
+					</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="userId">
+		<annotation>
+			<documentation>Die ID eines Benutzers.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+</schema>

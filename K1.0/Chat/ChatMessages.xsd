@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Chat:Messages"
+        xmlns:ctt="urn:kommunalportal-nrw:extension-api:K1.0:Chat:Types"
+        xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+        xmlns:adt="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+        xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+        elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Chat:Types" schemaLocation="ChatTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="../Document/DocumentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types" schemaLocation="../ApplicationData/ApplicationDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="getChatInfo">
+		<annotation>
+			<documentation>Abfrage von Status-Informationen zu einem Chat.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="applicationDataId" type="adt:applicationDataId" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getChatInfoResponse">
+		<annotation>
+			<documentation>Status-Informationen zu einem Chat, falls vorhanden.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="chatInfo" type="ctt:ChatInfo" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getChat">
+		<annotation>
+			<documentation>Abfrage eines vorhandenen Chat (-auszugs) zu einem Antrag.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="applicationDataId" type="adt:applicationDataId" />
+				<element name="start" type="dateTime" minOccurs="0" />
+				<element name="limitStatus" type="ctt:messageStatus" minOccurs="0" />
+				<element name="markRead" type="boolean" default="true" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getChatResponse">
+		<annotation>
+			<documentation>Der angeforderte Chat (-auszug) zu einem Antrag, falls vorhanden.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="chatInfo" type="ctt:Chat" minOccurs="0"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="writeMessage">
+		<annotation>
+			<documentation>
+				Anhängen einer Nachricht an einen Chat. Sollte noch kein Chat existieren wird er implizit erstellt.
+				Der Name, welcher als Absender dieser Nachricht angezeigt wird, kann mit Angabe von displayName verändert werden. Wird er weggelassen,
+				wird der Name des verknüpften Benutzers (SST-Header) angezeigt. Wenn kein  verknüpften Benutzers vorliegt, darf auch kein displayName
+				angegeben werden, da es sich in diesem Fall um eine Systemnachricht handelt.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="applicationDataId" type="adt:applicationDataId" />
+				<element name="message" type="string" />
+				<element name="documentAttachment" type="dt:DocumentAttachment" minOccurs="0" />
+				<element name="displayName" type="string" minOccurs="0" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="writeMessageResponse">
+		<annotation>
+			<documentation>Status-Antwort zum Anhängen einer neuen Chat-Nachricht.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="id" type="ctt:chatEntryId" />
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="setChatState">
+		<annotation>
+			<documentation>Setzen des Chat-Status.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="applicationDataId" type="adt:applicationDataId" />
+				<element name="chatStatus" type="ctt:chatStatus" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="setChatStateResponse">
+		<annotation>
+			<documentation>Status-Antwort zur Änderung des Chat-Status.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo" />
+			</sequence>
+		</complexType>
+	</element>
+</schema>

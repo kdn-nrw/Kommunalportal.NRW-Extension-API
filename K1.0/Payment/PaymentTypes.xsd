@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+		xmlns:pt="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+		xmlns:tdt="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types" schemaLocation="../TempData/TempDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	
+	<complexType name="PaymentProject">
+		<annotation>
+			<documentation>Ein Payment-Projekt.</documentation>
+		</annotation>
+		<sequence>
+			<element name="id" type="pt:paymentProjectId" />
+			<element name="name" type="string" />
+			<element name="paymethods" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>Eine Liste mit konfigurierten Zahlungsweisen (siehe XZuFi-Codeliste: https://www.xrepository.de/details/urn:de:xzufi:codeliste:zahlungsweise)</documentation>
+				</annotation>
+			</element>
+			<element name="testMode" type="boolean">
+				<annotation>
+					<documentation>Wenn das Projekt im Testmodus ist, werden keine Echtzahlungen durchgeführt.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="InitPaymentParams">
+		<annotation>
+			<documentation>Konfiguration eines Bezahlprozessess für die Initialisierung desselben.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="pt:PaymentInfo">
+				<sequence>
+					<element name="projectId" type="pt:paymentProjectId" />
+					<element name="description" type="string" minOccurs="0">
+						<annotation>
+							<documentation>Nährere Beschreibung der Bezahlung zur Anzeige auf der Bezahlseite.</documentation>
+						</annotation>
+					</element>
+					<element name="tempDataId" type="tdt:tempDataId">
+						<annotation>
+							<documentation>ID eines verknüpften TempData-Eintrags.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="PaymentDetails">
+		<annotation>
+			<documentation>Details zu einem Bezahlungsprozess.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="pt:PaymentInfo">
+				<sequence>
+					<element name="id" type="pt:paymentId" minOccurs="0"/>
+					<element name="paymethod" type="string" minOccurs="0"/>
+					<element name="status" type="pt:PaymentStatus" />
+					<element name="portalResult" type="pt:PortalPaymentResult" />
+					<element name="providerResult" type="pt:ProviderResult" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="InitPaymentResult">
+		<annotation>
+			<documentation>Resultat der Initiierung eines Bezahlungsprozesses.</documentation>
+		</annotation>
+		<sequence>
+			<element name="paymentId" type="pt:paymentId" />
+			<element name="redirectUrl" type="anyURI">
+				<annotation>
+					<documentation>URL, an die weitergeleitet werden muss, um die initiierte Bezahlung durchzuführen.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="PaymentInfo">
+		<annotation>
+			<documentation>Basis-Informationen zu einem Bezahlungsprozess.</documentation>
+		</annotation>
+		<sequence>
+			<element name="amount" type="int">
+				<annotation>
+					<documentation>Zu zahlender Gesamtbetrag in Eurocent.</documentation>
+				</annotation>
+			</element>
+			<element name="currency" type="pt:Currency" default="EUR" minOccurs="0"/>
+			<element name="cashReference" minOccurs="0">
+				<annotation>
+					<documentation>
+						Das Kassenzeichen. Wird es bei der Initiierung eine Zahlung weggelassen, wird vom Portal automatisch ein Kassenzeichen generiert.
+						(maximale Länge 27 Zeichen).
+					</documentation>
+				</annotation>
+				<simpleType>
+					<restriction base="string">
+						<maxLength value="27" />
+					</restriction>
+				</simpleType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ProviderResult">
+		<annotation>
+			<documentation>
+				Spezifisches Ergebnis des Bezahlvorgangs vom Bezahldienstleister. Dient der reinen Information und soll nicht programmatisch
+				ausgewertet werden. Zur programmatischen Auswertung gibt es das PortalPaymentResult.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="provider" type="string" />
+			<element name="code" type="string" minOccurs="0" />
+			<element name="text" type="string" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<simpleType name="PortalPaymentError">
+		<annotation>
+			<documentation>
+				Mögliche Fehler im Laufe eines Bezahlprozesses. Diese sind unabhängig vom Bezahldienstleister immer gleich und eignen
+				sich deshalb dazu, programmatisch auf sie zu reagieren.
+			</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="PROVIDER_NOT_REACHABLE">
+				<annotation>
+					<documentation>Der Bezahldienstleister konnte nicht erreicht werden.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="OTHER_PROVIDER_ERROR">
+				<annotation>
+					<documentation>Allgemeiner Fehler beim Bezahldienstleister .</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="INTERNAL_ERROR">
+				<annotation>
+					<documentation>Allgemeiner Fehler im Portal.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="PortalPaymentResult">
+		<annotation>
+			<documentation>
+				Mögliche Resultate eines Bezahlungsvorgangs im Portal. Diese sind unabhängig vom Bezahldienstleister immer gleich und eignen
+				sich deshalb dazu, programmatisch auf sie zu reagieren.
+			</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="UNDEFINED">
+				<annotation>
+					<documentation>Portalseitig gibt es kein auswertbares Resultat, das ProviderResult hält das entsprechende Resultat des Providers.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="PaymentStatus">
+		<annotation>
+			<documentation>Status eines Bezahlvorgangs.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="SUCCESS">
+				<annotation>
+					<documentation>Der Bezahlvorgang wurde erfolgreich abgeschlossen.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FAILURE">
+				<annotation>
+					<documentation>Der Bezahlvorgang wurde aufgrund eines Fehlers abgebrochen.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="CANCELLED">
+				<annotation>
+					<documentation>Der Bezahlvorgang wurde druch die Benutzerin/den Benutzer abgebrochen.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="INITIALIZED">
+				<annotation>
+					<documentation>Der Bezahlvorgang wurde erfolgreich initialisiert, aber noch nicht abgeschlossen.</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="Currency">
+		<annotation>
+			<documentation>Währung (gemäß ISO 4217). Momentan nur EUR zulässig.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="EUR" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="paymentProjectId">
+		<annotation>
+			<documentation>Die ID eines Payment-Projekts.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+
+	<simpleType name="paymentId">
+		<annotation>
+			<documentation>Die ID eines Payment-Prozesses.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+</schema>

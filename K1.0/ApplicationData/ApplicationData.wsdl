@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions name="ApplicationDataService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Service"
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+				  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+				  xmlns:ads="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Service">
+	<wsdl:import location="ApplicationDataService.wsdl" namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Service" />
+	<wsdl:service name="ApplicationData">
+		<wsdl:port binding="ads:ApplicationDataServiceSOAP" name="ApplicationDataServiceSOAP">
+			<soap:address location="https://portal-api.citkomm.de/Remote/K1.0/ApplicationDataService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+	xmlns:ct="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+	xmlns:adt="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+	xmlns:tdt="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types"
+	xmlns:pt="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+	xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+	xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types" schemaLocation="../ApplicationData/ApplicationDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types" schemaLocation="../TempData/TempDataTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types" schemaLocation="../Payment/PaymentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types" schemaLocation="../Extension/ExtensionTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<complexType name="SyncState">
+		<annotation>
+			<documentation>
+				Status der portalseitigen Session-Synchronisation.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="statusCode" type="int" />
+			<element name="statusMessage" type="string" minOccurs="0" />
+			<element name="returnUrl" type="anyURI" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<simpleType name="sat">
+		<annotation>
+			<documentation>Das ServiceAccessToken (SAT).</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+
+	<simpleType name="sst">
+		<annotation>
+			<documentation>Das SessionSynchronisationToken (SST).</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+
+	<simpleType name="taskType">
+		<annotation>
+			<documentation>Mögliche Arbeitsschritte.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="INDEX">
+				<annotation>
+					<documentation>
+						Mit diesem Arbeitsschritt wird die Einstiegsseite der Extension angezeigt.
+						In der TaskInfo "ExtensionServiceInfo" befinden sich weitere Details, wie z.B. der ExtensionService, der ausgeführt werden soll.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="SHOW">
+				<annotation>
+					<documentation>
+						Mit diesem Arbeitsschritt soll ein bereits existierender Antrag angezeigt werden.
+						Weitere Details befinden sich in der TaskInfo "ApplicationDataInfo".
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="CONFIG">
+				<annotation>
+					<documentation>
+						Dieser administrative Arbeitsschritt löst die Übermittlung der Konfigurationsdaten
+						einer Extension an die aufrufende Portal-Instanz aus (CoreService::configure).
+						Es existiert keine entsprechende TaskInfo.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="CUSTOMIZE">
+				<annotation>
+					<documentation>
+						Dieser administrative Arbeitsschritt soll die individuelle Konfiguration der Extension auf Extension-Seite
+						ermöglichen. Damit eine Extension individualisiert werden kann, muss sie im Portal als customizable
+						gekennzeichnet sein. Das geschieht mittels Konfiguration der Extension auf Portal-Seite über den CONFIG-Task.
+						Optional kann eine "ExtensionServiceInfo" angegeben werden. Dann sollte in die Customizing-Routine des entsprechenden Services
+						gewechselt werden.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="PAYMENT">
+				<annotation>
+					<documentation>
+						Mit diesem Arbeitsschritt soll auf eine zuvor durch die Extension initiierte und im Portal
+						abgeschlossene Bezahlung reagiert werden. Weitere Details befinden sich in der TaskInfo "PaymentInfo".
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="DATA">
+				<annotation>
+					<documentation>
+						Mit diesem Arbeitsschritt wird die Extension dazu aufgefordert, die temporären Daten eines anderen ExtensionServices
+						auszulesen und zu verarbeiten. Wie sie zu verarbeiten sind, müssen die beiden durch diesen Task kommunizierenden ExtensionServices
+						unter sich definieren. Der Task dient der reinen Datenübermittlung. In der TaskInfo "DataTaskInfo" befinden sich weitere
+						Details, wie die UUID des TempData-Eintrags, der verarbeitet werden soll und der ExtensionService, der ausgeführt werden soll.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="RETURN">
+				<annotation>
+					<documentation>
+						Durch diesen Arbeitsschritt wird die Extension angewiesen, den Benutzer zur zentralen
+						Portal-Instanz umzuleiten. Optional kann per RedirectTaskInfo eine Rücksprungadresse angegeben
+						werden, ansonsten soll das HomePortal angesteuert werden.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="COMMON">
+				<annotation>
+					<documentation>
+						Dieser Arbeitsschritt ist nicht näher spezifiziert und dient zur späteren Erweiterung der Tasks.
+						Zusätzliche Informationen werden über die CommonTaskInfo übermittelt.
+					</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="PortalStatusMessageType">
+		<annotation>
+			<documentation>Mögliche Nachrichtentypen für Portal-Statusnachrichten.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="SUCCESS">
+				<annotation>
+					<documentation>
+						Eine Erfolgsmeldung
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="INFO">
+				<annotation>
+					<documentation>
+						Eine Info-Meldung.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="ERROR">
+				<annotation>
+					<documentation>
+						Eine Fehlermeldung
+					</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<complexType name="Task">
+		<annotation>
+			<documentation>Beschreibung eines auszuführenden Tasks.</documentation>
+		</annotation>
+		<choice minOccurs="0">
+			<element name="applicationDataInfo" type="ct:ApplicationDataInfo" />
+			<element name="extensionServiceTaskInfo" type="ct:ExtensionServiceTaskInfo" />
+			<element name="paymentTaskInfo" type="ct:PaymentTaskInfo" />
+			<element name="dataTaskInfo" type="ct:DataTaskInfo" />
+			<element name="redirectTaskInfo" type="ct:RedirectTaskInfo" />
+			<element name="commonTaskInfo" type="ct:CommonTaskInfo">
+				<unique name="UniquePropertyNames">
+					<selector xpath="property" />
+					<field xpath="@name"></field>
+				</unique>
+			</element>
+		</choice>
+		<attribute name="type" type="ct:taskType" use="required" />
+	</complexType>
+
+	<complexType name="TaskInfo" abstract="true">
+		<annotation>
+			<documentation>Abstrakter Basis-Typ für Detail-Informationen zu Arbeitsschritten.</documentation>
+		</annotation>
+	</complexType>
+
+	<complexType name="ExtensionServiceTaskInfo">
+		<annotation>
+			<documentation>Enthält die ID eines existierenden ExtensionServices.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="id" type="et:extensionServiceId">
+						<annotation>
+							<documentation>Die ID eines ExtensionServices.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="PaymentTaskInfo">
+		<annotation>
+			<documentation>Enthält die ID eines existierenden ExtensionServices.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="id" type="pt:paymentId" />
+					<element name="tempDataId" type="tdt:tempDataId" />
+					<element name="result" type="pt:PaymentStatus" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="DataTaskInfo">
+		<annotation>
+			<documentation>Enthält die ID eines existierenden ExtensionServices.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="dataId" type="tdt:tempDataId">
+						<annotation>
+							<documentation>Die ID der temporären Daten, mit welchen gearbeitet werden soll.</documentation>
+						</annotation>
+					</element>
+					<element name="serviceId" type="et:extensionServiceId">
+						<annotation>
+							<documentation>Die ID eines ExtensionServices, der ausgeführt werden soll.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ApplicationDataInfo">
+		<annotation>
+			<documentation>Enthält die ID eines existierenden Antrags.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="id" type="adt:applicationDataId">
+						<annotation>
+							<documentation>Die ID eines Antrags.</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="CommonTaskInfo">
+		<annotation>
+			<documentation>Enthält beliebige Informationen zu einem Task, die noch nicht spezifiziert wurden.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="property" type="bt:NameValuePair" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="RedirectTaskInfo">
+		<annotation>
+			<documentation>Enthält Informationen zu einem Umleitungsziel.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="ct:TaskInfo">
+				<sequence>
+					<element name="description" type="string" />
+					<element name="url" type="anyURI" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="SecurityConfig">
+		<annotation>
+			<documentation>Enthält Konfigurationsparameter mit Bezug zu Authentifizierung und Autorisierung.</documentation>
+		</annotation>
+		<sequence>
+			<element name="permissions" type="ct:Permissions" minOccurs="0" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Permissions">
+		<annotation>
+			<documentation>Container für Permission-Elemente.</documentation>
+		</annotation>
+		<sequence>
+			<element name="permission" type="ct:PermissionDeclaration" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="PermissionDeclaration">
+		<annotation>
+			<documentation>Informationen zu einer einzelnen Berechtigung.</documentation>
+		</annotation>
+		<sequence>
+			<element name="key" type="ct:permissionKey" />
+			<element name="name" type="string">
+				<annotation>
+					<documentation>
+						Name der Berechtigung für die Anzeige im Portal.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="description" type="string">
+				<annotation>
+					<documentation>
+						Beschreibung der Berechtigung für die Anzeige im Portal.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExtensionServiceMapEntry">
+		<annotation>
+			<documentation>
+				Mappt einem frei wählbaren Schlüssel einen ExtensionService zu.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="key" type="string" />
+			<element name="extensionService" type="et:ExtensionService"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExtensionServiceIdMapEntry">
+		<annotation>
+			<documentation>
+				Mappt einem frei wählbaren Schlüssel eine ExtensionService-ID zu.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="key" type="string" />
+			<element name="extensionServiceId" type="et:extensionServiceId"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ExtensionConfigurationResult">
+		<sequence>
+			<element name="extensionKey" type="ct:extensionKey">
+				<annotation>
+					<documentation>
+						Wird in regelmäßigen Abständen neu generiert.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="extensionServiceIdMap" type="ct:ExtensionServiceIdMapEntry" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ClientInfo">
+		<annotation>
+			<documentation>
+				Informationen über den API-Client.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="clientName" type="string" />
+			<element name="versionNumber" type="ct:clientVersion">
+				<annotation>
+					<documentation>
+						Frei wählbare Versionsnummer des Clients z.B. zur Nachverfolgung in Fehlerfällen.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="clientVersion">
+		<annotation>
+			<documentation>Versionsummer eines API-Clients</documentation>
+		</annotation>
+		<restriction base="string">
+			<maxLength value="255" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="permissionKey">
+		<annotation>
+			<documentation>Interner Schlüssel einer einzelnen Berechtigung.</documentation>
+		</annotation>
+		<restriction base="string">
+			<pattern value="[A-Za-z][-_#+/A-Za-z0-9]{0,49}" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="extensionKey">
+		<annotation>
+			<documentation>
+				Interner Schlüssel der Extension. Wichtig, damit das Portal zusätzlich zum Zertifikat weiß, dass es sich um die in diesem Portal registrierte
+				Extension handelt. Gäbe es nur das Zertifikat, würde die gleiche Extension eines anderen Portals, die gleichen Zugriffsrechte bekommen.
+			</documentation>
+		</annotation>
+		<restriction base="string">
+			<pattern value="[A-F0-9]{64}" />
+		</restriction>
+	</simpleType>
+
+</schema>

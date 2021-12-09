@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types"
+		xmlns:tdt="urn:kommunalportal-nrw:extension-api:K1.0:TempData:Types"
+		xmlns:pt="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="../Core/CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types" schemaLocation="../Payment/PaymentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+	
+	<complexType name="TempData">
+		<annotation>
+			<documentation>Ein TempData-Objekt.</documentation>
+		</annotation>
+		<sequence>
+			<element name="tempDataId" type="tdt:tempDataId" minOccurs="0" />
+			<element name="payload" type="base64Binary">
+				<annotation>
+					<documentation>Beliebiger Inhalt des TempData-Objekts.</documentation>
+				</annotation>
+			</element>
+			<element name="paymentIds" type="pt:paymentId" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>Liste mit verknüpften Payment-IDs. Wird vom Portal mitgegeben.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="tempDataId">
+		<annotation>
+			<documentation>Die ID eines TempData-Objekts.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+</schema>

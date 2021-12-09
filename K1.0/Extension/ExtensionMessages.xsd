@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Messages"
+        xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+        xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+        elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types" schemaLocation="ExtensionTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="getAllExtensionServices">
+		<annotation>
+			<documentation>Liefert alle ExtensionServices zur eigenen Extension aus dem verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getAllExtensionServicesResponse">
+		<annotation>
+			<documentation>Informationen zur Extension aus dem verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="extensionServices" type="et:ExtensionService" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getExtensionServices">
+	<annotation>
+		<documentation>
+			Laden einer oder mehrerer ExtensionServices aus dem Portal, sofern die Extension diese lesen darf oder es ihre eigenen sind.
+		</documentation>
+	</annotation>
+	<complexType>
+		<sequence>
+			<element name="extensionServiceIds" type="et:extensionServiceId" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	</element>
+	<element name="getExtensionServicesResponse">
+		<annotation>
+			<documentation>Liefert die angefragten ExtensionServices zurück.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="extensionServices" type="et:ExtensionService" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getAllAuthorizedExtensionServices">
+		<annotation>
+			<documentation>
+				Laden aller ExtensionServices aus dem Portal, die die aufrufende Extension lesen darf. Das beinhaltet NICHT die eigenen
+				ExtensionServices.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getAllAuthorizedExtensionServicesResponse">
+		<annotation>
+			<documentation>Liefert die angefragten ExtensionServices zurück.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="extensionServices" type="et:ExtensionService" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="saveExtensionService">
+		<annotation>
+			<documentation>
+				Speichern/Überschreiben eines ExtensionServices im Portal. Wenn der übergebene ExtensionService keine ID hat, wird ein neuer im Portal
+				angelegt, und die dort vergebe UUID zurückgegeben. Wenn der übergebene ExtensionService eine ID hat, wird stattdessen der passende
+				ExtensionService im Portal mit den neuen Daten überschrieben.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="extensionService" type="et:ExtensionService"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="saveExtensionServiceResponse">
+		<annotation>
+			<documentation>Liefert die im Portal vergebene UUID des ExtensionServices zurück.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="id" type="et:extensionServiceId"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="deleteExtensionService">
+		<annotation>
+			<documentation>Löschen eines ExtensionServices im Portal. Es können nur zur eigenen Extension zugehörige Services gelöscht werden.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="id" type="et:extensionServiceId"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="deleteExtensionServiceResponse">
+		<annotation>
+			<documentation>Statusinformation über den Erfolg der Aktion.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="state" type="bt:StatusInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+
+
+</schema>

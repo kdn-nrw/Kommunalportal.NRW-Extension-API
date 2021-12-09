@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:YellowPages:Messages"
+		xmlns:ypt="urn:kommunalportal-nrw:extension-api:YellowPages:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:YellowPages:Types" schemaLocation="YellowPagesTypes.xsd" />
+
+	<element name="getVersion">
+		<annotation>
+			<documentation></documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getVersionResponse">
+		<annotation>
+			<documentation></documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="version" type="string"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getServiceList">
+		<annotation>
+			<documentation>Liefert eine Liste mit Informationen zu den weiteren verfügbaren Service-Endpunkten für die angeforderte Version der Extension-API.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="version" type="string" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getServiceListResponse">
+		<annotation>
+			<documentation>Liste der weiteren Endpunkte.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="Service" type="ypt:Service" maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+		<unique name="ServiceUniqueName">
+			<selector xpath="Service" />
+			<field xpath="name"></field>
+		</unique>
+		<unique name="ServiceUniqueUrl">
+			<selector xpath="Service" />
+			<field xpath="url"></field>
+		</unique>
+	</element>
+
+	<element name="getHomePortal">
+		<annotation>
+			<documentation>Liefert Informationen zum aktuell verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getHomePortalResponse">
+		<annotation>
+			<documentation>Informationen zum aktuell verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="HomePortal" type="ypt:HomePortal"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getSupportedApiVersions">
+		<annotation>
+			<documentation>
+				Liefert eine Liste mit den Versionen der Extension-API, die das angesprochene Portal unterstützt.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getSupportedApiVersionsResponse">
+		<annotation>
+			<documentation>Liste der Versionen.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="versions" type="string" maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getExtensionInfo">
+		<annotation>
+			<documentation>Liefert Informationen zur eigenen Extension aus dem verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getExtensionInfoResponse">
+		<annotation>
+			<documentation>Informationen zur Extension aus dem verbundenen Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="ExtensionInfo" type="ypt:ExtensionInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>

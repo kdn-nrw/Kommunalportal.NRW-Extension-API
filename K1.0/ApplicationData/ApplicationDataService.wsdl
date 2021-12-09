@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions  name="ApplicationDataService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Service"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:ads="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Service"
+	xmlns:adm="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Messages"
+	xmlns:cm="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+	xmlns:bm="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages">
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Messages" schemaLocation="ApplicationDataMessages.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages" schemaLocation="../Core/CoreMessages.xsd"/>
+			<xsd:import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Messages" schemaLocation="../BaseMessages.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	
+	<!-- Header -->
+	<wsdl:message name="auth">
+		<wsdl:part name="auth" element="cm:auth" />
+	</wsdl:message>
+
+	<wsdl:message name="client">
+		<wsdl:part name="client" element="cm:client" />
+	</wsdl:message>
+	
+	<!-- Body -->
+	<wsdl:message name="serverFault">
+		<wsdl:part name="fault" element="bm:serverFault" />
+	</wsdl:message>
+	
+	<wsdl:message name="getVersionRequest">
+		<wsdl:part element="bm:getVersion" name="parameters"/>
+	</wsdl:message>
+	<wsdl:message name="getVersionResponse">
+		<wsdl:part element="bm:getVersionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="submitApplicationDataRequest">
+		<wsdl:part element="adm:submitApplicationData" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="submitApplicationDataResponse">
+		<wsdl:part element="adm:submitApplicationDataResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getApplicationDataRequest">
+		<wsdl:part element="adm:getApplicationData" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getApplicationDataResponse">
+		<wsdl:part element="adm:getApplicationDataResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllApplicationDataRequest">
+		<wsdl:part element="adm:getAllApplicationData" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="getAllApplicationDataResponse">
+		<wsdl:part element="adm:getAllApplicationDataResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="updateStatusRequest">
+		<wsdl:part element="adm:updateStatus" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="updateStatusResponse">
+		<wsdl:part element="adm:updateStatusResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="attachDocumentRequest">
+		<wsdl:part element="adm:attachDocument" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="attachDocumentResponse">
+		<wsdl:part element="adm:attachDocumentResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:portType name="ApplicationDataService">
+		<wsdl:operation name="getVersion">
+			<wsdl:input message="ads:getVersionRequest" />
+			<wsdl:output message="ads:getVersionResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="submitApplicationData">
+			<wsdl:input message="ads:submitApplicationDataRequest" />
+			<wsdl:output message="ads:submitApplicationDataResponse" />
+			<wsdl:fault name="fault" message="ads:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getApplicationData">
+			<wsdl:input message="ads:getApplicationDataRequest" />
+			<wsdl:output message="ads:getApplicationDataResponse" />
+			<wsdl:fault name="fault" message="ads:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="getAllApplicationData">
+			<wsdl:input message="ads:getAllApplicationDataRequest" />
+			<wsdl:output message="ads:getAllApplicationDataResponse" />
+			<wsdl:fault name="fault" message="ads:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="updateStatus">
+			<wsdl:input message="ads:updateStatusRequest" />
+			<wsdl:output message="ads:updateStatusResponse" />
+			<wsdl:fault name="fault" message="ads:serverFault" />
+		</wsdl:operation>
+		<wsdl:operation name="attachDocument">
+			<wsdl:input message="ads:attachDocumentRequest" />
+			<wsdl:output message="ads:attachDocumentResponse" />
+			<wsdl:fault name="fault" message="ads:serverFault" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ApplicationDataServiceSOAP" type="ads:ApplicationDataService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getVersion">
+			<soap:operation soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:getVersion" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="submitApplicationData">
+			<soap:operation
+				soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:submitApplicationData" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:auth" part="auth"/>
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getApplicationData">
+			<soap:operation
+				soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:getApplicationData" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:auth" part="auth"/>
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="getAllApplicationData">
+			<soap:operation
+					soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:getAllApplicationData" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:auth" part="auth"/>
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="updateStatus">
+			<soap:operation
+				soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:updateStatus" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:auth" part="auth" />
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="attachDocument">
+			<soap:operation
+				soapAction="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:action:attachDocument" />
+			<wsdl:input>
+				<soap:body use="literal" />
+				<soap:header message="ads:auth" part="auth"/>
+				<soap:header message="ads:client" part="client"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+</wsdl:definitions>

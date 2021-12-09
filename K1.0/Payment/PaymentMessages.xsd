@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Messages"
+	xmlns:pt="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+	elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types" schemaLocation="PaymentTypes.xsd" />
+	
+	<element name="getPaymentProjects">
+		<annotation>
+			<documentation>Abfrage der für die Extension zur Verfügung stehenden Payment-Projekte.</documentation>
+		</annotation>
+		<complexType>
+			<sequence/>
+		</complexType>
+	</element>
+	<element name="getPaymentProjectsResponse">
+		<annotation>
+			<documentation>Die Payment-Projekte.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="paymentProjects" type="pt:PaymentProject" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="initPayment">
+		<annotation>
+			<documentation>Initiierung eines Bezahlungsprozesses.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="paymentParams" type="pt:InitPaymentParams"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="initPaymentResponse">
+		<annotation>
+			<documentation>Resultat der Initiierung.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="result" type="pt:InitPaymentResult" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="getPaymentDetails">
+		<annotation>
+			<documentation>Abfrage von detaillierten Informationen zu einem Bezahlungsprozess.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="paymentId" type="pt:paymentId" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="getPaymentDetailsResponse">
+		<annotation>
+			<documentation>Die angeforderten Informationen.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="paymentDetails" type="pt:PaymentDetails" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="paymentFault">
+		<annotation>
+			<documentation>Ein Fehler im Bazahlungsprozess.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="portalError" type="pt:PortalPaymentError" />
+				<element name="providerError" type="pt:ProviderResult" />
+			</sequence>
+		</complexType>
+	</element>
+
+</schema>

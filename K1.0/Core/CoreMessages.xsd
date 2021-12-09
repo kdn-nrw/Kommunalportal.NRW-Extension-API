@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Messages"
+		xmlns:ct="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types"
+		xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Core:Types" schemaLocation="CoreTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types" schemaLocation="../Extension/ExtensionTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<element name="ping">
+		<annotation>
+			<documentation>Ping-Anfrage zur Prüfung der Erreichbarkeit des WebServices.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="pingResponse">
+		<annotation>
+			<documentation>Antwort auf eine Ping-Anfrage.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="result" type="bt:StatusInfo" />
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="verify">
+		<annotation>
+			<documentation>
+				Mit dieser Methode wird die Verbindung zum Portal mit User-Kontext initiiert. Prüfung einer SAT-ID auf Gültigkeit und Erzeugung eines SST.
+				Alle folgenden Aktionen werden im Kontext des im Portal angemeldeten Benutzers oder eines Gastes ausgeführt.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="sat" type="ct:sat" />
+			</sequence>
+		</complexType>
+	</element>
+	<element name="verifyResponse">
+		<annotation>
+			<documentation>Rückgabe des erzeugten SST.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="sst" type="ct:sst"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="connect">
+		<annotation>
+			<documentation>
+				Mit dieser Methode wird die Verbindung zum Portal ohne User-Kontext initiiert. Wird für Server-To-Server Kommunikation benötigt.
+				Alle folgenden Aktionen werden als Systemaktionen ausgeführt. Damit sind unter Umständen nicht alle Aktionen ausführbar. Der Server
+				gibt in solchen Fällen eine entsprechende Fehlermeldung.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="extensionServiceId" type="et:extensionServiceId">
+					<annotation>
+						<documentation>
+							Der ExtensionService, welcher mit dem Portal verbinden soll.
+						</documentation>
+					</annotation>
+				</element>
+				<element name="extensionKey" type="ct:extensionKey">
+					<annotation>
+						<documentation>
+							Eindeutiger Schlüssel zur Identifizierung der Extension im Portal. Wird der Extension beim CONFIGURE-Task über die Methode
+							configure mitgeteilt.
+						</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="connectResponse">
+		<annotation>
+			<documentation>Rückgabe des erzeugten SST.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="sst" type="ct:sst"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="setPortalStatusMessage">
+		<annotation>
+			<documentation>
+				Setzt eine Statusnachricht im Portal, welche beim nächsten Aufruf des Portals angezeigt wird. Es muss sofort auf die zurückgegeben URL
+				weitergeleitet werden.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="message" type="string" />
+				<element name="type" type="ct:PortalStatusMessageType" default="SUCCESS"/>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="setPortalStatusMessageResponse">
+		<annotation>
+			<documentation>Vorgeschglagene Rücksprungadresse zum Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="returnUrl" type="anyURI"/>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="keepAlive">
+		<annotation>
+			<documentation>Aktualisierung der API-Session (SST) und ggf. der Benutzersession im Portal.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="apiOnly" type="boolean" default="false">
+					<annotation>
+						<documentation>
+							Definiert, ob ausschließlich das SST für die API-Session am Leben gehalten werden soll.
+							Bei false wird auch die Benutzersession im Portal am Leben gehalten.
+						</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="keepAliveResponse">
+		<annotation>
+			<documentation>Antwort auf die keepAlive-Anfrage.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="SyncState" type="ct:SyncState"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="getTask">
+		<annotation>
+			<documentation>Abfrage des zu erledigenden Arbeitsschritts.</documentation>
+		</annotation>
+		<complexType>
+			<sequence />
+		</complexType>
+	</element>
+	<element name="getTaskResponse">
+		<annotation>
+			<documentation>Informationen zum zu erledigenden Arbeitsschritt.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="task" type="ct:Task"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="configure">
+		<annotation>
+			<documentation>
+				Übermittlung der Konfigurationsinformationen an die Portal-Instanz. Hier werden auch die in der Extension definierten
+				Berechtigungen an das Portal übertragen.
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="security" type="ct:SecurityConfig" />
+				<element name="extensionServiceMap" type="ct:ExtensionServiceMapEntry" minOccurs="0" maxOccurs="unbounded">
+					<annotation>
+						<documentation>
+							Mappt frei wählbaren Schlüsseln ExtensionServices zu. Wenn diese ExtensionServices noch keine UUID haben, so
+							werden entsprechend neue im Portal angelegt. Wenn die ExtensionServices bereits eine UUID haben, so werden stattdessen
+							die entsprechenden ExtensionServices im Portal überschrieben. ExtensionServices, die nicht in dieser Liste auftauchen,
+							werden gelöscht. Ist die Map leer, passiert nichts im Bezug auf die im Portal gespeicherten ExtensionServices
+						</documentation>
+					</annotation>
+				</element>
+				<element name="portalExtension" type="et:Extension">
+					<annotation>
+						<documentation>
+							Standardwerte der Extension zur Initialisierung.
+						</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	<element name="configureResponse">
+		<complexType>
+			<sequence>
+				<element name="configResult" type="ct:ExtensionConfigurationResult" />
+				<element name="nextServerCert" type="string" minOccurs="0">
+					<annotation>
+						<documentation>
+							Angabe des nächsten Server-Zertifikats des kommunizierenden Portals. Dieses sollte dann provisorisch im Truststore
+							der Extension gespeichert werden.
+						</documentation>
+					</annotation>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="auth">
+		<annotation>
+			<documentation>Wrapper-Element für Informationen zur Authentifizierung des kommunizierenden Services als SOAP-Header.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="sst" type="ct:sst" />
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="client">
+		<annotation>
+			<documentation>Wrapper-Element für Informationen zum API-Client als SOAP-Header.</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<element name="info" type="ct:ClientInfo"/>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

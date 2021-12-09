@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<wsdl:definitions name="UserService" targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Service"
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+				  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+				  xmlns:us="urn:kommunalportal-nrw:extension-api:K1.0:User:Service">
+	<wsdl:import location="UserService.wsdl" namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Service" />
+	<wsdl:service name="User">
+		<wsdl:port binding="us:UserServiceSOAP" name="UserServiceSOAP">
+			<soap:address location="https://portal-api.citkomm.de/Remote/K1.0/UserService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

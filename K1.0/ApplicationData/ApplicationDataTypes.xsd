@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+		targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+		xmlns:adt="urn:kommunalportal-nrw:extension-api:K1.0:ApplicationData:Types"
+		xmlns:et="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types"
+		xmlns:dt="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types"
+		xmlns:pt="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types"
+		xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+		xmlns:ut="urn:kommunalportal-nrw:extension-api:K1.0:User:Types"
+		elementFormDefault="unqualified">
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Document:Types" schemaLocation="../Document/DocumentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Payment:Types" schemaLocation="../Payment/PaymentTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:User:Types" schemaLocation="../User/UserTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Extension:Types" schemaLocation="../Extension/ExtensionTypes.xsd" />
+	<import namespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types" schemaLocation="../BaseTypes.xsd" />
+
+	<complexType name="ApplicationData">
+		<annotation>
+			<documentation>Anwendungsdaten</documentation>
+		</annotation>
+		<sequence>
+			<element name="status" type="adt:ApplicationDataStatus" default="FINISHED" minOccurs="0"/>
+			<element name="externalStatus" type="bt:StatusInfo" minOccurs="0">
+				<annotation>
+					<documentation>
+						Beliebig definierbarer, externer Status des ExtensionServices.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="details" type="adt:ApplicationDataDetails" minOccurs="0"/>
+			<element name="payload" type="base64Binary"/>
+			<element name="xoevPayload" type="base64Binary" minOccurs="0">
+				<annotation>
+					<documentation>
+						Payload im XÖV-Format, zwecks standardisiertem Datenaustausch.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="attachedDocument" type="dt:DocumentAttachment" minOccurs="0" maxOccurs="unbounded" />
+			<element name="paymentId" type="pt:paymentId" minOccurs="0">
+				<annotation>
+					<documentation>
+						Wird im Fall einer erfolgreichen Bezahlung mitgegeben.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ApplicationDataEntry">
+		<annotation>
+			<documentation>Um Portalinformationen erweiterte Anwendungsdaten.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="adt:ApplicationData">
+				<sequence>
+					<element name="id" type="adt:applicationDataId"/>
+					<element name="extensionServiceId" type="et:extensionServiceId" />
+					<element name="userId" type="ut:userId" />
+					<element name="detailsUrl" type="anyURI">
+						<annotation>
+							<documentation>Link zur Detailseite des Anwendungsdaten im Portal</documentation>
+						</annotation>
+					</element>
+					<element name="documents" type="dt:DocumentInfo" minOccurs="0" maxOccurs="unbounded" />
+					<element name="statusHistory" type="adt:StatusHistoryEntry" minOccurs="0" maxOccurs="unbounded"/>
+					<element name="externalStatusMap" type="adt:ExternalStatusMapEntry" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Mappt jedem ExtensionService, der einen externen Status definiert hat, diesen zu.</documentation>
+						</annotation>
+					</element>
+					<element name="created" type="dateTime"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ApplicationDataDetails">
+		<annotation>
+			<documentation>Detaildaten-Eintrag von Anwendungsdaten</documentation>
+		</annotation>
+		<sequence>
+			<element name="detailsView" type="adt:DetailsView" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="detailsShort" type="adt:DetailsShortDefinition" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="DetailsView">
+		<annotation>
+			<documentation>Detaildaten von Anwendungsdaten in verschiedenen Formaten zur Anzeige auf der Standard-Detailseite</documentation>
+		</annotation>
+		<sequence>
+			<element name="dataFormat" type="adt:detailsDataFormat"/>
+			<element name="data" type="string"/>
+			<element name="order" type="bt:orderNumber">
+				<annotation>
+					<documentation>
+						Bestimmt die Reihenfolge der einzelnen Einträge. Eine niedrigere Zahl bedeutet, dass der Eintrag weiter oben auftaucht.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="DetailsShort">
+		<annotation>
+			<documentation>
+				Gekürzte Detaildaten von Anwendungsdaten. Können nur als Schlüssel-Wert-Paare vorliegen. Eignet sich z.B. für eine Vorschau.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="dataFilterKey" type="et:filterKey"/>
+			<element name="value" type="string"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="DetailsShortDefinition">
+		<annotation>
+			<documentation>
+				Gekürzte Detaildaten von Anwendungsdaten. Können nur als Schlüssel-Wert-Paare vorliegen. Eignet sich z.B. für eine Vorschau.
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="adt:DetailsShort">
+				<sequence>
+					<element name="order" type="bt:orderNumber">
+						<annotation>
+							<documentation>
+								Bestimmt die Reihenfolge der einzelnen Einträge. Eine niedrigere Zahl bedeutet, dass der Eintrag weiter oben auftaucht.
+							</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="StatusHistoryEntry">
+		<annotation>
+			<documentation>
+				Ein Eintrag der Status-Historie
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="status" type="adt:ApplicationDataStatus" />
+			<element name="time" type="dateTime">
+				<annotation>
+					<documentation>Zeitpunkt, zu dem der Status gesetzt wurde.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExternalStatusMapEntry">
+		<annotation>
+			<documentation>
+				Mappt einem ExtensionService einen externen Status zu.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="extensionServiceId" type="et:extensionServiceId" />
+			<element name="externalStatus" type="bt:StatusInfo">
+				<annotation>
+					<documentation>Beliebig definierbarer, externer Status der Extension.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="ExternalStatusFilter">
+		<annotation>
+			<documentation>
+				Ein Filter nach einem Externen Status eines ExtensionServices. Die entsprechende StatusMessageShort muss übereinstimmen.
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="extensionServiceId" type="et:extensionServiceId" />
+			<element name="messageShort" type="string" />
+		</sequence>
+	</complexType>
+
+	<simpleType name="detailsDataFormat">
+		<annotation>
+			<documentation>Mögliche Formate für Detaildaten.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="KEY_VALUE">
+				<annotation>
+					<documentation>
+						Schlüssel-Wert-Paare als JSON formatiert.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="PLAINTEXT">
+				<annotation>
+					<documentation>
+						Simpler Fließtext ohne Formatierung.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="HTML">
+				<annotation>
+					<documentation>
+						HTML-Text. Es sind nur spezifische Tags erlaubt. Diese sind wie folgt
+						- a
+						- blockquote
+						- code
+						- dd, dl, dt
+						- h1, h2, h3
+						- img
+						- li, ol, ul
+						- p
+						- pre
+						- sup
+						- sub
+						- s, del
+						- b, strong
+						- i, em
+						- br
+						- hr
+						- table, tr, th, td
+					</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="ApplicationDataStatus">
+		<annotation>
+			<documentation>Mögliche Status-Werte eines Anwendungsdaten-Eintrags.</documentation>
+		</annotation>
+		<restriction base="token">
+			<enumeration value="OPEN">
+				<annotation>
+					<documentation>Status 'offen', zum Beispiel für Anträge.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="IN_PROGRESS">
+				<annotation>
+					<documentation>Status 'in Arbeit', zum Beispiel für Anträge.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FORWARDED">
+				<annotation>
+					<documentation>Status 'Weitergeleitet', zum Beispiel für Anträge.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="SUBMITTED">
+				<annotation>
+					<documentation>Status 'Eingereicht', zum Beispiel für Anträge.</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="FINISHED">
+				<annotation>
+					<documentation>Status 'Abgeschlossen' (Standard).</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="CANCELLED">
+				<annotation>
+					<documentation>Status 'Abgebrochen'</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="applicationDataId">
+		<annotation>
+			<documentation>Die ID des existierenden Anwendungsdaten-Eintrags.</documentation>
+		</annotation>
+		<restriction base="bt:uuid">
+		</restriction>
+	</simpleType>
+
+</schema>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Kommunalportal.NRW Extension-API
+  %%
+  Copyright (C) 2018 - 2021 SIT GmbH
+  %%
+  © SIT Südwestfalen-IT – alle Rechte vorbehalten
+  #L%
+  -->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	xmlns:bt="urn:kommunalportal-nrw:extension-api:K1.0:Base:Types"
+	elementFormDefault="unqualified">
+	
+	<complexType name="Person">
+		<annotation>
+			<documentation>Personendaten</documentation>
+		</annotation>
+		<sequence>
+			<element name="title" type="string" minOccurs="0"/>
+			<element name="firstname" type="string"/>
+			<element name="lastname" type="string"/>
+			<element name="company" type="string" minOccurs="0"/>
+			<element name="additionalname" type="string" minOccurs="0"/>
+			<element name="birthday" type="date" minOccurs="0"/>
+			<element name="birthname" type="string" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Address">
+		<annotation>
+			<documentation>Adressdaten</documentation>
+		</annotation>
+		<sequence>
+			<element name="street" type="string"/>
+			<element name="streetnumber" type="string"/>
+			<element name="zipcode" type="string"/>
+			<element name="city" type="string"/>
+			<element name="district" type="string"/>
+			<element name="state" type="string"/>
+			<element name="country" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ContactData">
+		<annotation>
+			<documentation>Kontaktdaten</documentation>
+		</annotation>
+		<sequence>
+			<element name="email" type="bt:Email" />
+			<element name="phone" type="bt:Phone" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Phone">
+		<annotation>
+			<documentation>Eine Telefonnummer.</documentation>
+		</annotation>
+		<sequence>
+			<element name="prefix" type="string"/>
+			<element name="number" type="string"/>
+		</sequence>
+		<attribute name="type" type="bt:PhoneType"/>
+	</complexType>
+	
+	<complexType name="NameValuePair">
+		<annotation>
+			<documentation>Allgemeine Definition von Schlüssel-Wert-Paaren.</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="string">
+				<attribute name="name" type="string" />
+			</extension>
+		</simpleContent>
+	</complexType>
+	
+	<simpleType name="Email">
+		<annotation>
+			<documentation>Eine E-Mail-Adresse.</documentation>
+		</annotation>
+		<restriction base="string">
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="PhoneType">
+		<annotation>
+			<documentation>Art der Telefonnummer.</documentation>
+		</annotation>
+		<restriction base="string">
+			<enumeration value="private" />
+			<enumeration value="mobile" />
+			<enumeration value="fax" />
+			<enumeration value="other" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="orderNumber">
+		<annotation>
+			<documentation>Eine Zahl zur Definition von Reihenfolgen.</documentation>
+		</annotation>
+		<restriction base="integer">
+			<minInclusive value="0" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="uuid">
+		<annotation>
+			<documentation>Allgemeine Definition einer UUID.</documentation>
+		</annotation>
+		<restriction base="string">
+			<length value="36" fixed="true" />
+			<pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="mediaType">
+		<annotation>
+			<documentation>Definition eines Media Type gemäß RFC 6838, 4.2</documentation>
+		</annotation>
+		<restriction base="string">
+			<pattern value="[a-zA-Z0-9][-a-zA-Z0-9!#$&amp;^_.+]{0,126}/[a-zA-Z0-9][-a-zA-Z0-9!#$&amp;^_.+]{0,126}" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="leikaId">
+		<annotation>
+			<documentation>Definition einer LeiKa-ID. Siehe dazu https://ozg.kdn.de/leistungen.</documentation>
+		</annotation>
+		<restriction base="string">
+			<length value="14" fixed="true" />
+			<pattern value="[0-9]+" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="ozgId">
+		<annotation>
+			<documentation>Definition einer OZG-ID. Siehe dazu https://ozg.kdn.de/leistungen.</documentation>
+		</annotation>
+		<restriction base="string">
+			<length value="5" fixed="true" />
+			<pattern value="[0-9]+" />
+		</restriction>
+	</simpleType>
+	
+	<complexType name="StatusInfo">
+		<annotation>
+			<documentation>Allgemeine Status-Informationen.</documentation>
+		</annotation>
+			<sequence>
+			<element name="statusCode" type="int">
+				<annotation>
+					<documentation>Status-Code</documentation>
+				</annotation>
+			</element>
+			<element name="statusMessageShort">
+				<annotation>
+					<documentation>Status-Kurzbeschreibung</documentation>
+				</annotation>
+				<simpleType>
+					<restriction base="string">
+						<maxLength value="200" />
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="statusMessageLong" type="string" minOccurs="0">
+				<annotation>
+					<documentation>Ausführliche Statusmeldung.</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+</schema>
